@@ -48,7 +48,7 @@ def queryList(querySQL, isPrintLog=True, msg="Mysql fetch result size: %d "):
 # - querySQL：查询语句
 # - isPrintLog：是否打印日志
 # - msg：打印日志
-def queryOne(querySQL, isPrintLog=False, msg="mysql fetch one result"):
+def queryOne(querySQL, isPrintLog=False, msg="Mysql fetch one result"):
     try:
         mysqlConn = getMysqlConn()
         # 使用 cursor() 方法创建一个游标对象 cursor
@@ -62,7 +62,7 @@ def queryOne(querySQL, isPrintLog=False, msg="mysql fetch one result"):
             logger.info(msg)
         return result
     except Exception as ex:
-        logger.error('Error: query operation exception ：%s' % str(ex))
+        logger.error('Query operation exception ：%s' % str(ex))
         raise
     finally:
         # 关闭数据库连接
