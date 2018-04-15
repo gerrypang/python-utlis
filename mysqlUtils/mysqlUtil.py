@@ -3,6 +3,7 @@
 import pymysql
 import LoadConf
 import logging.config
+from commonUtils import CommonUtil
 
 # log配置
 logging.config.fileConfig('logger.conf')
@@ -28,6 +29,37 @@ def queryList(querySQL, isPrintLog=True, msg="Mysql fetch result size: %d "):
         cursor = mysqlConn.cursor()
         cursor.execute('SET NAMES UTF8')
         mysqlConn.commit()
+        cursor.execute(querySQL)
+        # 执行 SQL 查询
+        result = cursor.fetchall()
+        if isPrintLog:
+            logger.info(msg % len(result))
+        return result
+    except Exception as ex:
+        logger.error('Insert operation error：%s' % str(ex))
+        raise
+    finally:
+        # 关闭数据库连接
+        cursor.close()
+        mysqlConn.close()
+
+
+# 查询Mysql分页查询多条数据
+# 【参数说明】
+# - querySQL：查询语句
+# - currentPage：当前页码
+# - pageSize：每页大小
+# - isPrintLog：是否打印日志
+# - msg：打印日志
+def queryPage(querySQL, currentPage=1, pageSize=10, isPrintLog=True, msg="Mysql fetch result size: %d "):
+    try:
+        mysqlConn = getMysqlConn()
+        # 使用 cursor() 方法创建一个游标对象 cursor
+        cursor = mysqlConn.cursor()
+        cursor.execute('SET NAMES UTF8')
+        mysqlConn.commit()
+        startIndex = CommonUtil.get_current_page_start_index(currentPage, pageSize)
+        querySQL = querySQL + " LIMIT %d,%d " % (startIndex, pageSize)
         cursor.execute(querySQL)
         # 执行 SQL 查询
         result = cursor.fetchall()
